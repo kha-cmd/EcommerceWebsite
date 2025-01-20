@@ -1,0 +1,220 @@
+CREATE TABLE categories (
+    category_id INT(11) PRIMARY KEY NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    description TEXT DEFAULT NULL
+);
+
+CREATE TABLE products (
+    product_id INT(11) PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT DEFAULT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category_id INT(11) DEFAULT NULL,
+    brand VARCHAR(50) DEFAULT 'Nike',
+    color VARCHAR(50) DEFAULT NULL,
+    size VARCHAR(10) DEFAULT NULL,
+    image VARCHAR(255) DEFAULT NULL,
+    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+CREATE TABLE inventory (
+    inventory_id INT(11) PRIMARY KEY NOT NULL,
+    product_id INT(11) DEFAULT NULL,
+    stock INT(11) DEFAULT 0,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE product_images (
+    image_id INT(11) PRIMARY KEY NOT NULL,
+    product_id INT(11) DEFAULT NULL,
+    image VARCHAR(255) NOT NULL,
+    text VARCHAR(100) DEFAULT NULL,
+    uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE product_specifications (
+    spec_id INT(11) PRIMARY KEY NOT NULL,
+    product_id INT(11) DEFAULT NULL,
+    spec_name VARCHAR(50) NOT NULL,
+    spec_value VARCHAR(100) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE users (
+    user_id INT(11) PRIMARY KEY NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    address TEXT DEFAULT NULL,
+    phone VARCHAR(15) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()
+);
+
+CREATE TABLE cart (
+    cart_id INT(11) PRIMARY KEY NOT NULL,
+    user_id INT(11) DEFAULT NULL,
+    product_id INT(11) DEFAULT NULL,
+    quantity INT(11) DEFAULT 1,
+    added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE reviews (
+    review_id INT(11) PRIMARY KEY NOT NULL,
+    product_id INT(11) DEFAULT NULL,
+    user_id INT(11) DEFAULT NULL,
+    rating INT(11) DEFAULT NULL,
+    comment TEXT DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE wishlists (
+    wishlist_id INT(11) PRIMARY KEY NOT NULL,
+    user_id INT(11) DEFAULT NULL,
+    product_id INT(11) DEFAULT NULL,
+    added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE orders (
+    order_id INT(11) PRIMARY KEY NOT NULL,
+    user_id INT(11) DEFAULT NULL,
+    total DECIMAL(10, 2) DEFAULT NULL,
+    status ENUM('Pending', 'Completed', 'Cancelled') DEFAULT 'Pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE addresses (
+    address_id INT(11) PRIMARY KEY NOT NULL,
+    user_id INT(11) DEFAULT NULL,
+    address_type ENUM('Shipping', 'Billing') DEFAULT 'Shipping',
+    street VARCHAR(255) DEFAULT NULL,
+    city VARCHAR(100) DEFAULT NULL,
+    state VARCHAR(100) DEFAULT NULL,
+    postal_code VARCHAR(20) DEFAULT NULL,
+    country VARCHAR(50) DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE order_items (
+    order_item_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    product_id INT(11) DEFAULT NULL,
+    quantity INT(11) DEFAULT NULL,
+    price DECIMAL(10, 2) DEFAULT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE returns (
+    return_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    product_id INT(11) DEFAULT NULL,
+    reason TEXT DEFAULT NULL,
+    status ENUM('Requested', 'Approved', 'Rejected') DEFAULT 'Requested',
+    requested_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE transactions (
+    transaction_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    transaction_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    amount DECIMAL(10, 2) DEFAULT NULL,
+    payment_method ENUM('Credit Card', 'PayPal', 'Bank Transfer') DEFAULT NULL,
+    status ENUM('Pending', 'Completed', 'Failed') DEFAULT 'Pending',
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+CREATE TABLE payments (
+    payment_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    payment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    amount DECIMAL(10, 2) DEFAULT NULL,
+    payment_method ENUM('Credit Card', 'PayPal', 'Bank Transfer') DEFAULT NULL,
+    status ENUM('Pending', 'Completed', 'Failed') DEFAULT 'Pending',
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+CREATE TABLE shipping (
+    shipping_id INT(11) PRIMARY KEY NOT NULL,
+    method_name VARCHAR(50) NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL,
+    estimated_days INT(11) DEFAULT NULL,
+    description TEXT DEFAULT NULL
+);
+
+CREATE TABLE order_shipping (
+    order_shipping_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    shipping_id INT(11) DEFAULT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (shipping_id) REFERENCES shipping(shipping_id)
+);
+
+CREATE TABLE coupons (
+    coupon_id INT(11) PRIMARY KEY NOT NULL,
+    code VARCHAR(20) NOT NULL,
+    discount_percent DECIMAL(5, 2) DEFAULT NULL,
+    discount_amount DECIMAL(10, 2) DEFAULT NULL,
+    expiration_date DATE DEFAULT NULL,
+    min_purchase DECIMAL(10, 2) DEFAULT NULL,
+    max_discount DECIMAL(10, 2) DEFAULT NULL
+);
+
+CREATE TABLE order_coupons (
+    order_coupon_id INT(11) PRIMARY KEY NOT NULL,
+    order_id INT(11) DEFAULT NULL,
+    coupon_id INT(11) DEFAULT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (coupon_id) REFERENCES coupons(coupon_id)
+);
+
+CREATE TABLE admin (
+    admin_id INT(11) PRIMARY KEY NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INT(11) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    last_login TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    status ENUM('Active', 'Inactive') DEFAULT 'Active',
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+CREATE TABLE roles (
+    role_id INT(11) PRIMARY KEY NOT NULL,
+    role_name VARCHAR(50) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE permissions (
+    permission_id INT(11) PRIMARY KEY NOT NULL,
+    permission_name VARCHAR(50) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE role_permissions (
+    role_permission_id INT(11) PRIMARY KEY NOT NULL,
+    role_id INT(11) DEFAULT NULL,
+    permission_id INT(11) DEFAULT NULL,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
+);
+
+CREATE TABLE admin_activity_log (
+    log_id INT(11) PRIMARY KEY NOT NULL,
+    admin_id INT(11) DEFAULT NULL,
+    action VARCHAR(255) NOT NULL,
+    action_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    description TEXT,
+    FOREIGN KEY (admin_id) REFERENCES admin(admin_id)
+);

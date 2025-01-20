@@ -1,0 +1,145 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f3f4f6;
+  color: #333;
+  line-height: 1.6;
+  padding: 0;
+}
+
+h2,
+h3 {
+  font-size: 1.8rem;
+  color: #4a90e2;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container {
+  width: 80%;
+  max-width: 900px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+/* Form Styles */
+form {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  font-size: 1rem;
+  color: #666;
+}
+
+input,
+select,
+textarea,
+button {
+  padding: 14px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+button {
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #357ab7;
+}
+
+/* Success and Error Messages */
+.success-message,
+.error-message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.success-message {
+  background-color: #28a745;
+  color: white;
+}
+
+.error-message {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Input Field Styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 12px;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* Placeholder Text Style */
+::placeholder {
+  color: #aaa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  h2,
+  h3 {
+    font-size: 1.6rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+}
